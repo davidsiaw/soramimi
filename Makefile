@@ -6,7 +6,7 @@ CLEAN_TARGETS:=
 
 INCLUDE_FLAGS:=
 LIBRARY_FLAGS:=
-LINKER_FLAGS:=$(shell sdl2-config --libs --cflags) -lSDL2_image -lSDL2_mixer -lSDL2_net -lSDL2_ttf
+LINKER_FLAGS:=$(shell sdl2-config --libs --cflags) -lSDL2_image -lSDL2_mixer -lSDL2_net -lSDL2_ttf -lstdc++
 
 SOURCES:=$(shell find src -type f -name '*.cpp')
 OBJECTS:=$(patsubst src/%.cpp,obj/%.o,$(SOURCES))
@@ -20,6 +20,9 @@ CXXFLAGS:=$(CPPFLAGS) $(MORECPPFLAGS)
 OUTPUTFILE:=main
 
 all: bin/$(OUTPUTFILE)
+
+rpistart: bin/$(OUTPUTFILE)
+	startx $(PWD)/$< --
 
 bin:
 	mkdir -p bin
