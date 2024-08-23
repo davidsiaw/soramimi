@@ -1,0 +1,2 @@
+# sudo xhost +local:docker
+cd .. && docker run --rm -ti -v $PWD:/src --workdir=/src --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --net=host -e DISPLAY=:1 -e XDG_RUNTIME_DIR=/src davidsiaw/soramimitest bin/main
