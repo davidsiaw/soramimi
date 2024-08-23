@@ -1,2 +1,2 @@
 # sudo xhost +local:docker
-cd .. && docker run --rm -ti -v $PWD:/src --workdir=/src --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --net=host -e DISPLAY=:1 -e XDG_RUNTIME_DIR=/src davidsiaw/soramimitest bin/main
+cd .. && docker run --rm -ti --privileged=true -v $PWD:/src --workdir=/src --volume="$HOME/.Xauthority:/root/.Xauthority:rw"  -u `id -u` --net=host -e DISPLAY=:1 -v /run/user/1000:/run/user/1000 -e XDG_RUNTIME_DIR=/run/user/1000 davidsiaw/soramimitest bin/main

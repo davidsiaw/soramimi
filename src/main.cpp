@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 #include <stdio.h>
 
 // Screen dimensions
@@ -7,7 +8,7 @@
 #define SCREEN_HEIGHT 1024
 
 int main(int argc, char *argv[]) {
-  if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
     printf("SDL_Init Error: %s\n", SDL_GetError());
     return 1;
   }
@@ -18,6 +19,20 @@ int main(int argc, char *argv[]) {
     SDL_Quit();
     return 1;
   }
+
+  // Initialize SDL_mixer
+  if (!(Mix_Init(MIX_INIT_OGG))) {
+    printf("Mix_Init Error: %s\n", Mix_GetError());
+    SDL_Quit();
+    return 1;
+  }
+
+  if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 1, 1024) < 0) {
+      printf("SDL_mixer could not initialize! %s\n", Mix_GetError());
+    SDL_Quit();
+    return 1;
+  }
+
 
   SDL_Window *window = SDL_CreateWindow("SDL Image Test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
   if (!window) {
@@ -49,12 +64,29 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
+  // Mix
+  Mix_Music *music = Mix_LoadMUS("t1.ogg");
+  if (!music) {
+    printf("Mix_LoadMUS Error: %s\n", Mix_GetError());
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    Mix_Quit();
+    IMG_Quit();
+    SDL_Quit();
+    return 1;
+  }
+
+  Mix_VolumeMusic(20);
+
+  Mix_PlayMusic(music, 0);
+
   SDL_Texture *imageTexture = SDL_CreateTextureFromSurface(renderer, imageSurface);
   SDL_FreeSurface(imageSurface);
   if (!imageTexture) {
     printf("SDL_CreateTextureFromSurface Error: %s\n", SDL_GetError());
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    Mix_Quit();
     IMG_Quit();
     SDL_Quit();
     return 1;
@@ -84,6 +116,8 @@ int main(int argc, char *argv[]) {
   SDL_DestroyTexture(imageTexture);
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
+  Mix_FreeMusic(music);
+  Mix_Quit();
   IMG_Quit();
   SDL_Quit();
 

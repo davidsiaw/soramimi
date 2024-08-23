@@ -6,7 +6,7 @@ CLEAN_TARGETS:=
 
 INCLUDE_FLAGS:=
 LIBRARY_FLAGS:=
-LINKER_FLAGS:=$(shell sdl2-config --libs --cflags) -lSDL2_image
+LINKER_FLAGS:=$(shell sdl2-config --libs --cflags) -lSDL2_image -lSDL2_mixer -lSDL2_net -lSDL2_ttf
 
 SOURCES:=$(shell find src -type f -name '*.cpp')
 OBJECTS:=$(patsubst src/%.cpp,obj/%.o,$(SOURCES))
@@ -30,7 +30,7 @@ obj:
 lib:
 	mkdir -p lib
 
-bin/$(OUTPUTFILE): bin $(OBJECTS) $(REQUIRED_TARGETS)
+bin/$(OUTPUTFILE): bin $(OBJECTS) $(REQUIRED_TARGETS) Makefile
 	$(CC) $(CFLAGS) $(OBJECTS) -o $@ $(INCLUDE_FLAGS) $(LIBRARY_FLAGS) $(LINKER_FLAGS)
 
 # pull in dependency info for *existing* .o files
