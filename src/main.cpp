@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
   while(running) {
     if(SDL_WaitEvent(&event)) {
       switch(event.type) {
-        case SDL_Quit:
+        case SDL_QUIT:
           running = false;
       }
     }
